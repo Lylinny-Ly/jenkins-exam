@@ -15,10 +15,6 @@ stages {
                  docker build -t $DOCKER_ID/$DOCKER_IMAGE_1:$DOCKER_TAG ./$DOCKER_IMAGE_1 
                 sleep 6
                 '''
-                }
-            }
-           steps {
-                script {
                 sh '''
                  docker build -t $DOCKER_ID/$DOCKER_IMAGE_2:$DOCKER_TAG ./$DOCKER_IMAGE_2 
                 sleep 6
@@ -43,13 +39,9 @@ stages {
                     sh '''
                     curl http://localhost:8080/api/v1/movies/docs
                     '''
-                    }
-                 }
-            steps {
-                    script {
                     sh '''
                     curl http://localhost:8080/api/v1/casts/docs
-                    docker compose down -d
+                    docker compose down
                     '''
                     }
                   }
@@ -64,7 +56,7 @@ stages {
 
                 script {
                 sh '''
-                docker login -u $ -p $DOCKER_PASS
+                docker login -u $DOCKER_ID -p $DOCKER_PASS
                 docker push $DOCKER_ID/$DOCKER_IMAGE_1:$DOCKER_TAG
                 docker push $DOCKER_ID/$DOCKER_IMAGE_2:$DOCKER_TAG
                 '''
