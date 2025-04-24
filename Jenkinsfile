@@ -143,7 +143,7 @@ stage('Deploiement en staging'){
   stage('Deploiement en prod'){
         when 
         {
-        branch 'origin/main'
+        expression { env.GIT_BRANCH == 'origin/main' }
         }
         environment
         {
