@@ -1,8 +1,10 @@
 pipeline {
 environment { // Declaration of environment variables
-DOCKER_ID = "fallewi" // replace this with your docker-id
-DOCKER_IMAGE = "datascientestapi"
+DOCKER_ID = "lylinny" // replace this with your docker-id
+DOCKER_IMAGE_1 = "movie-service"
+DOCKER_IMAGE_2 = "cast-service"
 DOCKER_TAG = "v.${BUILD_ID}.0" // we will tag our images with the current build in order to increment the value by 1 with each new build
+#DOCKER_TAG = "latest"
 }
 agent any // Jenkins will be able to select all available agents
 stages {
@@ -11,7 +13,18 @@ stages {
                 script {
                 sh '''
                  docker rm -f jenkins
-                 docker build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
+                 #docker build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
+                 #docker pull $DOCKER_ID/$DOCKER_IMAGE_1:$DOCKER_TAG
+                 #docker pull $DOCKER_ID/$DOCKER_IMAGE_2:$DOCKER_TAG
+                 docker build -t $DOCKER_ID/$DOCKER_IMAGE_1:$DOCKER_TAG ./$DOCKER_IMAGE_1 
+                sleep 6
+                '''
+                }
+            }
+           steps {
+                script {
+                sh '''
+                 docker build -t $DOCKER_ID/$DOCKER_IMAGE_2:$DOCKER_TAG ./$DOCKER_IMAGE_2 
                 sleep 6
                 '''
                 }
@@ -21,7 +34,8 @@ stages {
                 steps {
                     script {
                     sh '''
-                    docker run -d -p 80:80 --name jenkins $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
+                    #docker run -d -p 80:80 --name jenkins $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
+                    docker compose up -d
                     sleep 10
                     '''
                     }
@@ -32,7 +46,14 @@ stages {
             steps {
                     script {
                     sh '''
-                    curl localhost
+                    curl http://localhost:8080/api/v1/movies/docs
+                    '''
+                    }
+            steps {
+                    script {
+                    sh '''
+                    curl http://localhost:8080/api/v1/casts/docs
+                    docker compose down -d
                     '''
                     }
             }
@@ -48,8 +69,9 @@ stages {
 
                 script {
                 sh '''
-                docker login -u $DOCKER_ID -p $DOCKER_PASS
-                docker push $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
+                docker login -u $ -p $DOCKER_PASS
+                docker push $DOCKER_ID/$DOCKER_IMAGE_1:$DOCKER_TAG
+                docker push $DOCKER_ID/$DOCKER_IMAGE_2:$DOCKER_TAG
                 '''
                 }
             }
@@ -68,7 +90,6 @@ stage('Deploiement en dev'){
                 mkdir .kube
                 ls
                 cat $KUBECONFIG > .kube/config
-                cp fastapi/values.yaml values.yml
                 cat values.yml
                 sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
                 helm upgrade --install app fastapi --values=values.yml --namespace dev
