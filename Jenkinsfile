@@ -114,9 +114,9 @@ stage('Deploiement en staging'){
         {
         KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
         }
-            when {
-                branch 'master'
-             }
+            //when {
+            //    branch 'master'
+            // }
           
             steps {
             // Create an Approval Button with a timeout of 15minutes.
