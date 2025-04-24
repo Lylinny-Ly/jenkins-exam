@@ -100,6 +100,7 @@ stage('Deploiement en staging'){
                 mkdir .kube
                 ls
                 cat $KUBECONFIG > .kube/config
+                cp values_staging.yaml ./charts/values.yaml
                 cat ./charts/values.yaml
                 sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" ./charts/values.yaml
                 helm upgrade --install app ./charts --values=./charts/values.yaml --namespace staging
@@ -131,6 +132,7 @@ stage('Deploiement en staging'){
                 mkdir .kube
                 ls
                 cat $KUBECONFIG > .kube/config
+                cp values_prod.yaml ./charts/values.yaml
                 cat ./charts/values.yaml
                 sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" ./charts/values.yaml
                 helm upgrade --install app ./charts --values=./charts/values.yaml --namespace prod
