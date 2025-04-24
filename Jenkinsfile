@@ -4,7 +4,6 @@ DOCKER_ID = "lylinny" // replace this with your docker-id
 DOCKER_IMAGE_1 = "movie-service"
 DOCKER_IMAGE_2 = "cast-service"
 DOCKER_TAG = "v.${BUILD_ID}.0" // we will tag our images with the current build in order to increment the value by 1 with each new build
-#DOCKER_TAG = "latest"
 }
 agent any // Jenkins will be able to select all available agents
 stages {
@@ -13,9 +12,6 @@ stages {
                 script {
                 sh '''
                  docker rm -f jenkins
-                 #docker build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
-                 #docker pull $DOCKER_ID/$DOCKER_IMAGE_1:$DOCKER_TAG
-                 #docker pull $DOCKER_ID/$DOCKER_IMAGE_2:$DOCKER_TAG
                  docker build -t $DOCKER_ID/$DOCKER_IMAGE_1:$DOCKER_TAG ./$DOCKER_IMAGE_1 
                 sleep 6
                 '''
@@ -34,7 +30,6 @@ stages {
                 steps {
                     script {
                     sh '''
-                    #docker run -d -p 80:80 --name jenkins $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
                     docker compose up -d
                     sleep 10
                     '''
