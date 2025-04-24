@@ -80,7 +80,7 @@ stage('Deploiement en dev'){
                 ls
                 cat $KUBECONFIG > .kube/config
                 cat ./charts/values.yaml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yaml
+                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" ./charts/values.yaml
                 helm upgrade --install app ./charts --values=./charts/values.yaml --namespace dev
                 '''
                 }
@@ -101,7 +101,7 @@ stage('Deploiement en staging'){
                 ls
                 cat $KUBECONFIG > .kube/config
                 cat ./charts/values.yaml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yaml
+                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" ./charts/values.yaml
                 helm upgrade --install app ./charts --values=./charts/values.yaml --namespace staging
                 '''
                 }
@@ -132,7 +132,7 @@ stage('Deploiement en staging'){
                 ls
                 cat $KUBECONFIG > .kube/config
                 cat ./charts/values.yaml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yaml
+                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" ./charts/values.yaml
                 helm upgrade --install app ./charts --values=./charts/values.yaml --namespace prod
                 '''
                 }
