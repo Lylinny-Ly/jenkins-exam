@@ -41,7 +41,6 @@ stages {
                     '''
                     sh '''
                     curl http://localhost:8080/api/v1/casts/docs
-                    docker compose down
                     '''
                     }
                   }
@@ -73,6 +72,7 @@ stage('Deploiement en dev'){
             steps {
                 script {
                 sh '''
+                docker compose down
                 rm -Rf .kube
                 mkdir .kube
                 ls
@@ -93,6 +93,7 @@ stage('Deploiement en staging'){
             steps {
                 script {
                 sh '''
+                docker compose down
                 rm -Rf .kube
                 mkdir .kube
                 ls
@@ -123,6 +124,7 @@ stage('Deploiement en staging'){
 
                 script {
                 sh '''
+                docker compose down
                 rm -Rf .kube
                 mkdir .kube
                 ls
