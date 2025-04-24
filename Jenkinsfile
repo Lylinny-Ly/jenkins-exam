@@ -130,16 +130,7 @@ stage('Deploiement en staging'){
                 }
             }
 
-        } 
-  stage('Debug Branch') {
-          steps {
-            script {
-              echo "Branch according to Jenkins: ${env.BRANCH_NAME}"
-              echo "Git branch full: ${env.GIT_BRANCH}"
-            }
-          }
-        }
-       
+        }    
   stage('Deploiement en prod'){
         when 
         {
