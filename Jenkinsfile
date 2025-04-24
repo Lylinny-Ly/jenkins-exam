@@ -109,14 +109,37 @@ stage('Deploiement en staging'){
             }
 
         }
-  stage('Deploiement en prod'){
+  stage('Deploiement en qa'){
         environment
         {
         KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
         }
-            when {
-                branch 'main'
-             }
+            steps {
+                script {
+                sh '''
+                docker compose down
+                rm -Rf .kube
+                mkdir .kube
+                ls
+                cat $KUBECONFIG > .kube/config
+                cp values_qa.yaml ./charts/values.yaml
+                cat ./charts/values.yaml
+                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" ./charts/values.yaml
+                helm upgrade --install app ./charts --values=./charts/values.yaml --namespace qa
+                '''
+                }
+            }
+
+        }      
+  stage('Deploiement en prod'){
+        when 
+        {
+        branch 'main'
+        }
+        environment
+        {
+        KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
+        }
           
             steps {
             // Create an Approval Button with a timeout of 15minutes.
