@@ -44,6 +44,7 @@ stages {
                     curl http://localhost:8080/api/v1/movies/docs
                     '''
                     }
+                 }
             steps {
                     script {
                     sh '''
@@ -51,8 +52,7 @@ stages {
                     docker compose down -d
                     '''
                     }
-            }
-
+                  }
         }
         stage('Docker Push'){ //we pass the built image to our docker hub account
             environment
