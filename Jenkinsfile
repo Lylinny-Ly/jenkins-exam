@@ -92,7 +92,7 @@ stage('Deploiement en dev'){
                 cat $KUBECONFIG > .kube/config
                 cat values.yml
                 sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install app fastapi --values=values.yml --namespace dev
+                helm upgrade --install app ./charts --values=./charts/values.yml --namespace dev
                 '''
                 }
             }
@@ -110,10 +110,9 @@ stage('Deploiement en staging'){
                 mkdir .kube
                 ls
                 cat $KUBECONFIG > .kube/config
-                cp fastapi/values.yaml values.yml
                 cat values.yml
                 sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install app fastapi --values=values.yml --namespace staging
+                helm upgrade --install app ./charts --values=./charts/values.yml --namespace staging
                 '''
                 }
             }
@@ -124,6 +123,10 @@ stage('Deploiement en staging'){
         {
         KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
         }
+            when {
+                branch 'master'
+             }
+          
             steps {
             // Create an Approval Button with a timeout of 15minutes.
             // this require a manuel validation in order to deploy on production environment
@@ -140,7 +143,7 @@ stage('Deploiement en staging'){
                 cp fastapi/values.yaml values.yml
                 cat values.yml
                 sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install app fastapi --values=values.yml --namespace prod
+                helm upgrade --install app ./charts --values=./charts/values.yml --namespace prod
                 '''
                 }
             }
