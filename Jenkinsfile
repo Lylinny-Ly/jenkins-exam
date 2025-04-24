@@ -27,6 +27,7 @@ stages {
                     script {
                     sh '''
                     docker compose down
+                    sleep 6
                     docker compose up -d
                     sleep 10
                     '''
